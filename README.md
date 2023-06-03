@@ -1,1 +1,3 @@
-# flutter_playground
+# FLutter Playground
+
+Flutter playground project for articles
