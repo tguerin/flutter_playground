@@ -21,9 +21,6 @@ class MyApp extends StatelessWidget {
           themeProvider.darkMode ? ThemeMode.dark : ThemeMode.light;
       final appTheme = AppTheme();
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-        systemNavigationBarColor: Colors.transparent
-      ));
       return MaterialApp(
         title: 'Translucent Navigation',
         themeMode: themeMode,
@@ -48,29 +45,36 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(builder: (context, themeProvider, child) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Text(
-                "The current theme is :",
-              ),
-              Text(themeProvider.darkMode ? "Dark" : "Light"),
-            ],
+      return AnnotatedRegion(
+          value: SystemUiOverlayStyle(
+            systemNavigationBarContrastEnforced: false,
+            systemNavigationBarDividerColor: Colors.transparent,
+            systemNavigationBarIconBrightness: themeProvider.darkMode ? Brightness.light : Brightness.dark,
+            systemNavigationBarColor: Colors.transparent,
           ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            themeProvider.invertCurrentThemeMode();
-          },
-          tooltip: 'Invert current theme mode',
-          child: const Icon(Icons.change_circle),
-        ),
-      );
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text(widget.title),
+            ),
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  const Text(
+                    "The current theme is :",
+                  ),
+                  Text(themeProvider.darkMode ? "Dark" : "Light"),
+                ],
+              ),
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                themeProvider.invertCurrentThemeMode();
+              },
+              tooltip: 'Invert current theme mode',
+              child: const Icon(Icons.change_circle),
+            ),
+          ));
     });
   }
 }
