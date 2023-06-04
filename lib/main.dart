@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_playground/app_theme.dart';
+import 'package:flutter_playground/device_feature.dart';
 import 'package:flutter_playground/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  DeviceFeature().init();
   runApp(ChangeNotifierProvider<ThemeProvider>(
     create: (_) => ThemeProvider(),
     child: const MyApp(),
@@ -45,12 +48,16 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(builder: (context, themeProvider, child) {
+      var navigationBarColor = Colors.transparent;
+      if (!DeviceFeature().isEdgeToEdgeAvailable()) {
+        navigationBarColor = Theme.of(context).colorScheme.background;
+      }
       return AnnotatedRegion(
           value: SystemUiOverlayStyle(
             systemNavigationBarContrastEnforced: false,
             systemNavigationBarDividerColor: Colors.transparent,
             systemNavigationBarIconBrightness: themeProvider.darkMode ? Brightness.light : Brightness.dark,
-            systemNavigationBarColor: Colors.transparent,
+            systemNavigationBarColor: navigationBarColor,
           ),
           child: Scaffold(
             appBar: AppBar(
