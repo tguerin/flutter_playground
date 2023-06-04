@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(builder: (context, themeProvider, child) {
+      final edgeToEdgeAvailable = DeviceFeature().isEdgeToEdgeAvailable();
       final themeMode =
           themeProvider.darkMode ? ThemeMode.dark : ThemeMode.light;
       final appTheme = AppTheme();
@@ -27,8 +28,8 @@ class MyApp extends StatelessWidget {
       return MaterialApp(
         title: 'Translucent Navigation',
         themeMode: themeMode,
-        theme: appTheme.light(),
-        darkTheme: appTheme.dark(),
+        theme: appTheme.light(edgeToEdgeAvailable),
+        darkTheme: appTheme.dark(edgeToEdgeAvailable),
         home: const MyHomePage(title: 'Translucent Navigation'),
       );
     });
@@ -48,18 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(builder: (context, themeProvider, child) {
-      var navigationBarColor = Colors.transparent;
-      if (!DeviceFeature().isEdgeToEdgeAvailable()) {
-        navigationBarColor = Theme.of(context).colorScheme.background;
-      }
-      return AnnotatedRegion(
-          value: SystemUiOverlayStyle(
-            systemNavigationBarContrastEnforced: false,
-            systemNavigationBarDividerColor: Colors.transparent,
-            systemNavigationBarIconBrightness: themeProvider.darkMode ? Brightness.light : Brightness.dark,
-            systemNavigationBarColor: navigationBarColor,
-          ),
-          child: Scaffold(
+      return Scaffold(
             appBar: AppBar(
               title: Text(widget.title),
             ),
@@ -81,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
               tooltip: 'Invert current theme mode',
               child: const Icon(Icons.change_circle),
             ),
-          ));
+          );
     });
   }
 }
